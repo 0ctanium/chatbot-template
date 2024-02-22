@@ -1,9 +1,11 @@
 import requests
+import os
 from rasa_sdk import Action, Tracker
 from rasa_sdk.executor import CollectingDispatcher
 from typing import Any, Text, Dict, List, Union
 from rasa_sdk.events import SlotSet, UserUttered
-import requests
+
+api_url = os.environ.get('API_URL', 'http://localhost:3000')
 
 def return_fallback_suggestions(self,
                          dispatcher: CollectingDispatcher,
@@ -23,7 +25,7 @@ def return_fallback_suggestions(self,
     for i in intents_not_bad:
         intents_ids.append(i['name'])
 
-    response = requests.post('http://localhost:3000/api/public/intents', json = intents_ids)
+    response = requests.post(api_url + '/api/public/intents', json = intents_ids)
     for i in response.json():
         buttons_to_send.append({"payload": "/" + i['id'], "title": i['mainQuestion']})
 
